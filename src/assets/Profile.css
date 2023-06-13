@@ -1,427 +1,66 @@
-@media screen and (max-width: 400px){
-    /*Section 1 */
-    .Jumbotron{
-        margin: 40px 20px;
-    }
-
-    .gambar_beranda {
-        width: 100%;
-        height:250px;
-        margin: 0 auto;
-    }
-
-    .description {
-        margin: 20px auto;
-        text-align: justify;
-    }
-
-    .description h2{
-        text-align: center;
-        font-size: 25px;
-    }
-
-    .description #colored {
-        color: #2A5171;
-    }
-
-    .description p{
-        font-size: 10px;
-        padding : 20px;
-    }
-    /* END OF Section 1 */
-
-    /*Section 2 */
-    .angka {
-        font-size:14px;
-    }
-
-    .ket-angka{
-        font-size:10px;
-    }
-    /* END OF Section 2 */
-
-    /*Section 3 */
-    .gambar_visi{
-        display:none;
-    }
+@media screen and (min-width: 320px){
+    .container-table{
+        width: 80%;
+        margin-top: 20px;
+        font-size :15px;
+      }
     
-    #visi, #misi, #tujuan{
-        width:80%;
-        text-align:center;
-    }
-
-    #visi{
-        margin: 70px 0;
-        padding: 15px;
-        border-radius: 20px;
-    }
-
-    #misi, #tujuan {
-        margin: 40px 0;
-        padding: 15px;
-        border-radius: 20px;
-    }
-
-    #visi h3, #misi h3, .denah h3, #tujuan h3{
-        font-size:25px;
-    }
-
-    #visi p, #misi li, #tujuan li{
-        font-size:12px;
-    }
-
-    #misi li, #tujuan li{
-        text-align:left;
-    }
-
-    #misi ol{
-        width:80%;
-        margin: 0 auto;
-    }
-    /* END OF Section 3 */
+      .container-table td {
+        padding: 10px;
+      }
+    
+      .header th{
+        padding: 10px;
+      }
 }
 
-@media screen and (min-width: 400px){
-    /*Section 1 */
-    .Jumbotron{
-        margin: 40px 50px;
-    }
+@media screen and (min-width: 418px){
+    .container-table{
+        width: 80%;
+        margin-top: 20px;
+        font-size :15px;
+      }
     
-    .gambar_beranda {
-        width: 100%;
-        height:250px;
-        margin: 0 auto;
-    }
-
-    .description {
-        margin: 20px 0;
-        text-align: center;
-    }
-
-    .description h2{
-        font-size: 35px;
-    }
-
-    .description #colored {
-        color: #2A5171;
-    }
-
-    .description p{
-        font-size: 15px;
-        padding : 20px;
-    }
-    /* END OF Section 1 */
-
-    /*Section 2 */
-    .angka {
-        font-size:17px;
-    }
-
-    .ket-angka{
-        font-size:14px;
-    }
-    /* END OF Section 2 */
-
-    /*Section 3 */
-    .gambar_visi{
-        display:none;
-    }
+      .container-table td {
+        padding: 10px;
+      }
     
-    #visi, #misi, #tujuan{
-        width:80%;
-        text-align:center;
-        border-radius: 50px;
-    }
-
-    #visi{
-        margin: 70px 0;
-        padding: 35px;
-        border-radius: 20px;
-    }
-
-    #misi, #tujuan {
-        margin: 40px 0;
-        padding: 15px;
-        border-radius: 20px;
-    }
-
-    #visi h3, #misi h3, .denah h3, #tujuan h3{
-        font-size:30px;
-    }
-
-    #visi p, #misi li{
-        font-size:18px;
-    }
-
-    #misi ol{
-        width:80%;
-        margin: 0 auto;
-    }
-    /* END OF Section 3 */
+      .header th{
+        padding: 10px;
+      }
 }
 
-/* For tablets: */
-@media screen and (min-width: 600px){
-    /*Section 1 */
-    .gambar_beranda {
+@media only screen and (min-width: 1064px){
+    .container-table{
         width: 70%;
-        margin: 0 auto;
-    }
-
-    .description {
-        margin: 20px 0;
-        text-align: center;
-    }
-
-    .description h2{
-        font-size: 35px;
-    }
-
-    .description p{
-        font-size: 20px;
-        padding : 20px;
-    }
-    /* END OF Section 1 */
-
-    /*Section 3 */
-    .gambar_visi{
-        display:none;
-    }
+      }
     
-    #visi, #misi, #tujuan{
-        width:80%;
-        text-align:center;
-    }
-
-    #visi, #misi, #tujuan{
-        margin: 70px 0;
-        padding: 50px;
-    }
-
-    #visi h3, #misi h3, .denah h3, #tujuan h3{
-        font-size:32px;
-    }
-
-    #visi p, #misi li, #tujuan li{
-        font-size:20px;
-    }
-
-    #misi ol, #tujuan ol{
-        width:80%;
-        margin: 0 auto;
-    }
-    /* END OF Section 3 */
+      .container-table td {
+        padding: 20px;
+      }
+    
+      .header th{
+        padding: 20px;
+      }
 }
-
-/* For desktop: */
-@media only screen and (min-width: 768px){
-    /*Section 1 */
-    .gambar_beranda {
-        width: 500px;
-    }
-
-    .description h2{
-        font-size: 40px;
-    }
-
-    .description p{
-        padding : 40px;
-    }
-    /* END OF Section 1 */
-
-    /*Section 2 */
-    .angka {
-        font-size:25px;
-    }
-
-    .ket-angka{
-        font-size:17px;
-    }
-    /* END OF Section 2 */
-
-    /*Section 3 */
-    #visi, #misi, #tujuan{
-        width:600px;
-    }
-
-    #visi h3, #misi h3, .denah h3, #tujuan h3{
-        font-size:35px;
-    }
-    
-    /* END OF Section 3 */
-}   
 
 @media only screen and (min-width: 1392px){
-    /*Section 1 */
-    .Jumbotron{
-        display: flex;
-        flex-direction: row;
-        flex-direction: row-reverse;
-        padding:0 100px;
-    }
-
-    .gambar_beranda {
-        width: 40%;
-    }
-
-    .description {
-        width: 50%;
-        margin: auto 0;
-        text-align: left;
-    }
-
-    .description h2{
-        font-size: 50px;
-    }
-
-    .description p{
-        font-size: 20px;
-        padding : 0;
-    }
-    /* END OF Section 1 */
-
-    /*Section 2 */
-    .angka{
-        font-size:40px;
-    }
-
-    .ket-angka{
-        font-size:23px;
-    }
-    /* END OF Section 2 */
-
-    /*Section 3 */
-    #visi, #misi{
-        width:80%;
-        display:flex;
-        padding: 100px;
-        margin: auto 0;
-    }
-
-    #misi, #tujuan{
-        width:80%;
-        padding: 100px 0;
-    }
-
-    .gambar_visi, .gambar_misi{
-        display: block;
-        width: 400px;
-    }
-
-    #visi_desc{
-        padding: 0 100px;
-        margin: 0 auto;
-    }
-
-    #visi h3, #misi h3, .denah h3, #tujuan h3{
-        font-size:45px;
-    }
-
-    #visi p, #misi li, #tujuan li{
-        font-size:25px;
-    }
-    
-    /* END OF Section 3 */
-
-    .denah{
-        width:100%;
-        padding:0;
+    .container-table{
+      width: 65%;
     }
 }
 
-/* Section 1 */
-
-
-.gambar_beranda {
-    display: block;
-}
-
-.description h2{
-    font-family: 'Oswald', sans-serif;
-    weight:700;
-}
-
-.description #colored {
-    color: #2A5171;
-}
-
-.description p{
-    font-family: 'Roboto', sans-serif;
-    weight:400;
-}
-/* END OF Section 1 */
-
-/*Section 2 */
-.info_jumlah {
-    background-color: rgba(42, 81, 113, 1);
-    display: grid;
-    grid-template-columns: auto auto auto;
-    text-align:center;
-    width:100%;
-    color: #ede5e5;
-    padding: 20px 0;
-}
-
-.jumlah{
-    border-right:1px solid white;
-    padding:2px;
-}
-
-.angka{
-    font-family: 'Oswald', sans-serif;
-    weight:700;
-}
-
-.ket-angka{
-    font-family: 'Roboto', sans-serif;
-    weight:400;
-}
-/* END OF Section 2 */
-
-/*Section 3 */
-
-#visi, #misi, #tujuan{
-    margin: 100px auto;
-    box-shadow: rgba(0, 0, 0, 0.56) 0px 22px 70px 4px;
-}
-
-#misi h3{
-    text-align:center;
-    margin-bottom:30px;
-}
-
-#visi h3, #misi h3,.denah h3, #tujuan h3 {
-    font-family: 'Merriweather Sans', sans-serif;
-    font-weight: 700;
-}
-
-#visi p, #misi li{
-    font-family: 'Roboto', sans-serif;
-    weight:400;
-}
-
-#misi{
-    background-color: rgba(42, 81, 113, 1);
-    color:white;
-}
-
-#misi li{
-    margin-bottom: 10px;
-}
-/* END OF Section 3 */
-
-/*Section 4 */
-.denah{
-    width:100%;
-}
-
-.denah h3{
+  .container-table{
+    border-collapse: collapse;
+    border: 0px solid #FFFFFF ;
     text-align: center;
-}
-
-.gambar_denah{
-    display: block;
-    width: 40%;
-    margin: 0px auto;
-}
-/* END OF Section 4 */
+    background-color:#EEEEEE;
+  }
+  
+  .header{
+    background-color: #27374D;
+    color: #FFFFFF;
+    text-align: center;
+    font-family: Nunito;
+  }
+  
