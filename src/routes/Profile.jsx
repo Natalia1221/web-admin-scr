@@ -5,104 +5,89 @@ import { useState } from "react";
 import Table from "react-bootstrap/Table";
 import { Card } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
-import Modals from "../component/Modals"
+import supabase from "../config/supabaseClient";
 
 
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 const VisiMisi = () => {
-  const [datas, setDatas] = useState([]);
+  const [fetchError, setFetchError] = useState(null);
+  const [jumlah, setJumlah] = useState(null);
+  const [visi, setVisi] = useState();
+  const [misi, setMisi] = useState();
+  const [tujuan, setTujuan] = useState();
+
   const [showModalAdd, setShowModalAdd] = useState(false);
   const [modeModal, setModeModal] = useState("");
-  const [jumlah, setJumlah] = useState({
-    pengurus :0,
-    komputer :0,
-    luas :"",
-  });
-  const [visi, setVisi] = useState("");
-  const [misi, setMisi] = useState([]);
-  const [tujuan, setTujuan] = useState([]);
+  
   const [loading, setLoading] = useState(true);
 
-  const handleSaveEvent = () => {
-    // let req = new XMLHttpRequest();
+  const handleSaveEvent = async () => {
+    if(modeModal=="jumlah") {
+      const { error } = await supabase
+      .from('jumlah')
+      .update({ komputer: jumlah.komputer,
+                luas : jumlah.luas,
+                pengurus: jumlah.pengurus 
+              })
+      .eq('id', jumlah.id)
+    }
 
-    // req.onreadystatechange = () => {
-    // if (req.readyState == XMLHttpRequest.DONE) {
-    //   console.log(req.responseText);
-    //   }
-    // };
+    if(modeModal=="visi") {
+      const { error } = await supabase
+      .from('visi')
+      .update({ visi: visi.visi})
+      .eq('id',  visi.id)
+    }
 
-    // req.open("PUT", "https://api.jsonbin.io/v3/b/642edc16c0e7653a059f0111", true);
-    // req.setRequestHeader("Content-Type", "application/json");
-    // req.setRequestHeader("X-Master-Key", "$2b$10$y0gK/I3iIf6ZpQdNy1jcIOGz244q1yRdbBRNDws4fl5TLU7mSS6wi");
-    
-
-    // if(modeModal==="jumlah"){
-    //   req.send(`{"jumlah": ${JSON.stringify(jumlah)}}`);
-    // }
-    
-    
-   
-    // console.log(jumlah)
-    // console.log(visi)
-    // console.log(misi)
-    // console.log(tujuan)
-
-    // setJumlah({
-    //   pengurus :0,
-    //   komputer :0,
-    //   luas :"",
-    // })
-    // setVisi("");
-    // setMisi([]);
-    // setTujuan([]);
-    
+    if(modeModal=="misi") {
+      misi.map(async (misi)=>{
+        const { error } = await supabase
+        .from('misi')
+        .update({ misi: misi.misi})
+        .eq('id',  misi.id)
+      })
+      
+    }
     setShowModalAdd(false);
   };
 
   useEffect(() => {
-
-    fetch("https://api.jsonbin.io/v3/b/642edc16c0e7653a059f0111", {
-      headers: {
-        "X-ACCESS-KEY": "$2b$10$yySJNemZxy5owr6fRQU62Ovqd/PLHW7.kg3KToeIMK5tCRqX398X."
+    const fetchEvent = async () => {
+      const  dataJlh = await supabase.from("jumlah").select("*");
+      if (dataJlh) {
+        setJumlah(dataJlh.data[0]);
+        setFetchError(null);
       }
-    })
-    .then((response) => response.json())
-    .then((json) => setDatas(json))
-    .then(()=> datas)
-    .then((data)=>{
-              if(data.record){
-                setJumlah({pengurus:data.record.jumlah.pengurus,
-                  komputer : data.record.jumlah.komputer,
-                  luas: data.record.jumlah.luas,
-                  
-                })
 
-                setVisi(data.record.visi);
-                setMisi(data.record.misi);
-                setTujuan(data.record.tujuan);
-              }
-              
+      const  dataVisi = await supabase.from("visi").select("*");
+      if (dataVisi) {
+        setVisi(dataVisi.data[0]);
+        setFetchError(null);
+      }
 
-              // datas.record?(datas.record.misi.map((misi)=>{
-              //   setMisi((prevState) => ([
-              //     ...prevState,
-              //     misi,
-              //   ]))
-              // }))
-              // :(setMisi([]))
+      const  dataMisi = await supabase.from("misi").select("*");
+      if (dataMisi) {
+        //  dataMisi.data.map((onemisi, index) => {
+        //   !misi ? setMisi([{ misi0: onemisi }])
+        //     : setMisi((prevState) => ([
+        //       ...prevState,
+        //       { [`misi${index}`]: onemisi },
+        //     ]));
 
-              // datas.record?(datas.record.tujuan.map((tujuan)=>{
-              //   setTujuan((prevState) => ([
-              //     ...prevState,
-              //     tujuan,
-              //   ]))
-              // }))
-              // :(setTujuan([]))
-              
-    })
+        // })
+        setMisi(dataMisi.data)
+        
+        console.log(dataMisi.data)
+        
+        setFetchError(null);
+      }
+    };
+
+    fetchEvent();
+    misi?console.log(misi):console.log("kosong")
   }, []);
+
 
 
 
@@ -111,7 +96,7 @@ const VisiMisi = () => {
     <>
       {/* <Modals show={modalShow}/> */}
       <center>
-        {!datas.record ? (
+        {!jumlah ? (
           <Card className="w-25 mt-4 mb-4">
             <Card.Body>Tidak ada data</Card.Body>
           </Card>
@@ -127,7 +112,7 @@ const VisiMisi = () => {
                 { <>
                     <tr>
                       <td align="left">Jumlah</td>
-                      <td>{`${datas.record.jumlah.komputer} Kompuer, ${datas.record.jumlah.luas} luas rungan, ${datas.record.jumlah.pengurus} pengurus`}</td>
+                      <td>{`${jumlah.komputer} Kompuer, ${jumlah.luas} luas rungan, ${jumlah.pengurus} pengurus`}</td>
                       <td>
                         <Button
                           name= "jumlah"
@@ -146,7 +131,7 @@ const VisiMisi = () => {
 
                     <tr>
                       <td align="left">Visi</td>
-                      <td>{`${datas.record.visi} `}</td>
+                      <td>{visi?visi.visi:""}</td>
                       <td>
                         <Button
                           name= "visi"
@@ -167,8 +152,9 @@ const VisiMisi = () => {
                       <td align="left">Misi</td>
                       <td>
                         <ol>
-                          {datas.record.misi.map((misi, i)=>{
-                            return(<li key={i}>{misi}</li>)
+                          {!misi?""
+                          :misi.map((onemisi, index)=>{
+                            return(<li key={index}>{onemisi.misi}</li>)
                           })}
                         </ol>
                         
@@ -193,9 +179,9 @@ const VisiMisi = () => {
                       <td align="left">Tujuan</td>
                       <td>
                         <ol>
-                          {datas.record.tujuan.map((tujuan, i)=>{
+                          {/* {datas.record.tujuan.map((tujuan, i)=>{
                             return(<li>{tujuan}</li>)
-                          })}
+                          })} */}
                         </ol>
                         
                       </td>
@@ -242,7 +228,7 @@ const VisiMisi = () => {
                   <Form.Label className="w-25">Komputer</Form.Label>
                   <Form.Control
                     className="w-100"
-                    placeholder={datas.record?datas.record.jumlah.komputer:""}
+                    placeholder={jumlah?jumlah.komputer:""}
                     value={jumlah.komputer}
                     onChange={(v) => {
                       setJumlah((prevState) => ({
@@ -259,7 +245,7 @@ const VisiMisi = () => {
                   <Form.Label className="w-25">Luas</Form.Label>
                   <Form.Control
                     className="w-100"
-                    placeholder={datas.record?datas.record.jumlah.luas:""}
+                    placeholder={jumlah?jumlah.luas:""}
                     value={jumlah.luas}
                     onChange={(v) => {
                       setJumlah((prevState) => ({
@@ -276,7 +262,7 @@ const VisiMisi = () => {
                   <Form.Label className="w-25">Pengurus</Form.Label>
                   <Form.Control
                     className="w-100"
-                    placeholder={datas.record?datas.record.jumlah.pengurus:""}
+                    placeholder={jumlah?jumlah.pengurus:""}
                     value={jumlah.pengurus}
                     onChange={(v) => {
                       setJumlah((prevState) => ({
@@ -296,12 +282,19 @@ const VisiMisi = () => {
                 <Form.Group className="d-flex mb-2 mt-2">
                 <Form.Label className="w-25">visi</Form.Label>
                 <Form.Control
-                  className="w-100"
+                  className={visi?visi.visi:""}
                   placeholder=""
                   as="textarea"
                   rows={3}
-                  value={visi}
-                  onChange={(v) => setVisi(v.target.value)}
+                  value={visi?visi.visi:""}
+                  onChange={(v) => {
+                    setVisi((prevState) => ({
+                        ...prevState,
+                        visi: v.target.value,
+                      }))
+                    
+                  }
+                  }
                 />
                 </Form.Group>
               </>
@@ -309,33 +302,39 @@ const VisiMisi = () => {
               :(modeModal==="misi"?(
               <>
                 {/* misi */}
-                <Form.Group className="d-flex mb-2 mt-2">
-                <Form.Label className="w-25">misi</Form.Label>
-                <Form.Control
-                  className="w-100"
-                  placeholder=""
-                  as="textarea"
-                  rows={5}
-                  value={
-                    misi.map((misi, i)=>{
-                    return(`${i+1} ${misi} \n`)
-                    })}
-                  onChange={(v) => {
-                    const arraymisi = v.target.value.split("\n")
-                    arraymisi.map((misi, i)=>{
-                      arraymisi[i]=misi.slice(2)
-                    })
-                    setMisi(arraymisi)
-                    console.log(arraymisi)
-                  }}
-                />
-                </Form.Group>
+                
+                {!misi?("")
+                :(
+                  misi.map((one_misi,i)=>{
+                    return<>
+                      <Form.Group key ={i} className="d-flex mb-2 mt-2">
+                      <Form.Label className="w-25">{`misi ${i+1}`}</Form.Label>
+                      <Form.Control
+                        className="w-100"
+                        placeholder=""
+                        as="textarea"
+                        rows={2}
+                        value={misi[i].misi?misi[i].misi:""}
+                        onChange={(v) => {
+                          let newmisi = misi
+                          newmisi[i].misi = v.target.value;
+                          if(newmisi[i].misi){setMisi(newmisi)}
+                          console.log(misi)
+                        }}
+                      />
+                      </Form.Group>
+                    </>
+                    
+                })
+                )}
+                
+                
               </>
               )
               :(<>
                 <>
                 {/* tujuan */}
-                <Form.Group className="d-flex mb-2 mt-2">
+                {/* <Form.Group className="d-flex mb-2 mt-2">
                 <Form.Label className="w-25">tujuan</Form.Label>
                 <Form.Control
                   className="w-100"
@@ -348,7 +347,7 @@ const VisiMisi = () => {
                     })}
                   onChange={(v) => setTujuan(v.target.value)}
                 />
-                </Form.Group>
+                </Form.Group> */}
               </>
               </>)))
               }
