@@ -15,12 +15,32 @@ const VisiMisi = () => {
   const [jumlah, setJumlah] = useState(null);
   const [visi, setVisi] = useState();
   const [misi, setMisi] = useState();
+  const [updatemisi, setUpdatemisi] = useState();
   const [tujuan, setTujuan] = useState();
+  
 
   const [showModalAdd, setShowModalAdd] = useState(false);
   const [modeModal, setModeModal] = useState("");
+
+  const [showModalMisi, setShowModalMisi] = useState(false);
+  const [updateMisi, setUpdateMisi] = useState("");
+  const [updateTujuan, setUpdateTujuan] = useState("");
+
+  const [showModalDelete, setShowModalDelete] = useState(false);
+  const [idDelete, setIdDelete] = useState(false);
   
+  const [showModalNew, setShowModalNew] = useState(false);
+  const [addNew, setAddNew] = useState("");
+
   const [loading, setLoading] = useState(true);
+
+  const getUpdatedData = async (modeModal) =>{
+    const  UpdatedData= await supabase.from(`${modeModal}`).select("*").order('created_at', { ascending: true });
+    if(UpdatedData){
+      if(modeModal==="misi"){setMisi(UpdatedData.data)}
+      if(modeModal==="tujuan"){setTujuan(UpdatedData.data)}
+    }
+  }
 
   const handleSaveEvent = async () => {
     if(modeModal=="jumlah") {
@@ -40,17 +60,59 @@ const VisiMisi = () => {
       .eq('id',  visi.id)
     }
 
-    if(modeModal=="misi") {
-      misi.map(async (misi)=>{
-        const { error } = await supabase
-        .from('misi')
-        .update({ misi: misi.misi})
-        .eq('id',  misi.id)
-      })
-      
-    }
     setShowModalAdd(false);
   };
+
+  const handleSaveMisi = async () => {
+    if(modeModal==="misi") {
+      if(updateMisi!==""){
+        
+        const { error } = await supabase
+        .from('misi')
+        .update({ misi: updateMisi.misi})
+        .eq('id',  updateMisi.id)
+        
+        getUpdatedData(modeModal)
+        setUpdateMisi("")
+      }
+    }
+
+    if(modeModal=="tujuan") {
+      if(updateTujuan!==""){
+        
+        const { error } = await supabase
+        .from('tujuan')
+        .update({ tujuan: updateTujuan.tujuan})
+        .eq('id',  updateTujuan.id)
+        
+        getUpdatedData(modeModal)
+        setUpdateTujuan("")
+      }
+    }
+
+    setShowModalMisi(false)
+  }
+
+  const handleDelete = async () =>{
+    if(idDelete){
+      const { error } = await supabase
+      .from(`${modeModal}`)
+      .delete()
+      .eq('id', idDelete)
+    }
+    
+    getUpdatedData(modeModal) 
+    setShowModalDelete(false)
+  } 
+  
+  const handleNew = async (modeModal) =>{
+    const { error } = await supabase
+    .from(`${modeModal}`)
+    .insert({ [`${modeModal}`]: addNew })
+    getUpdatedData(modeModal) 
+    setShowModalNew(false)
+    setAddNew("")
+  }
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -66,35 +128,25 @@ const VisiMisi = () => {
         setFetchError(null);
       }
 
-      const  dataMisi = await supabase.from("misi").select("*");
+      const  dataMisi = await supabase.from("misi").select("*").order('created_at', { ascending: true });
       if (dataMisi) {
-        //  dataMisi.data.map((onemisi, index) => {
-        //   !misi ? setMisi([{ misi0: onemisi }])
-        //     : setMisi((prevState) => ([
-        //       ...prevState,
-        //       { [`misi${index}`]: onemisi },
-        //     ]));
-
-        // })
         setMisi(dataMisi.data)
-        
-        console.log(dataMisi.data)
-        
+        setFetchError(null);
+      }
+
+      const  dataTujuan = await supabase.from("tujuan").select("*").order('created_at', { ascending: true });
+      if (dataTujuan) {
+        setTujuan(dataTujuan.data)
         setFetchError(null);
       }
     };
 
     fetchEvent();
-    misi?console.log(misi):console.log("kosong")
+    
   }, []);
-
-
-
-
 
   return (
     <>
-      {/* <Modals show={modalShow}/> */}
       <center>
         {!jumlah ? (
           <Card className="w-25 mt-4 mb-4">
@@ -118,7 +170,7 @@ const VisiMisi = () => {
                           name= "jumlah"
                           className="deleteButton"
                           style={{ fontFamily: "Bold" }}
-                          variant="danger"
+                          variant="primary"
                           onClick={(value) => {
                             setShowModalAdd(true);
                             setModeModal("jumlah");
@@ -137,7 +189,7 @@ const VisiMisi = () => {
                           name= "visi"
                           className="deleteButton"
                           style={{ fontFamily: "Bold" }}
-                          variant="danger"
+                          variant="primary"
                           onClick={() => {
                             setShowModalAdd(true);
                             setModeModal("visi");
@@ -164,7 +216,7 @@ const VisiMisi = () => {
                           name= "misi"
                           className="deleteButton"
                           style={{ fontFamily: "Bold" }}
-                          variant="danger"
+                          variant="primary"
                           onClick={() => {
                             setShowModalAdd(true);
                             setModeModal("misi");
@@ -179,9 +231,10 @@ const VisiMisi = () => {
                       <td align="left">Tujuan</td>
                       <td>
                         <ol>
-                          {/* {datas.record.tujuan.map((tujuan, i)=>{
-                            return(<li>{tujuan}</li>)
-                          })} */}
+                          {!tujuan?""
+                          :tujuan.map((onetujuan, index)=>{
+                            return(<li key={index}>{onetujuan.tujuan}</li>)
+                          })}
                         </ol>
                         
                       </td>
@@ -190,7 +243,7 @@ const VisiMisi = () => {
                           name= "misi"
                           className="deleteButton"
                           style={{ fontFamily: "Bold" }}
-                          variant="danger"
+                          variant="primary"
                           onClick={() => {
                             setShowModalAdd(true);
                             setModeModal("tujuan");
@@ -208,7 +261,7 @@ const VisiMisi = () => {
         )}
       </center>
 
-      {/* modal add */}
+      {/* modal pertama */}
       <Modal
         show={showModalAdd}
         size="lg"
@@ -216,7 +269,7 @@ const VisiMisi = () => {
         centered
       >
         <Modal.Header closeButton onClick={() => setShowModalAdd(false)}>
-          <Modal.Title id="contained-modal-title-vcenter" className="title-addevent" style={{ fontFamily: "Bold" }}>EDIT DATA JUMLAH</Modal.Title>
+          <Modal.Title id="contained-modal-title-vcenter" className="title-addevent" style={{ fontFamily: "Bold" }}>{`edit data ${modeModal}`}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div>
@@ -302,59 +355,120 @@ const VisiMisi = () => {
               :(modeModal==="misi"?(
               <>
                 {/* misi */}
-                
+                <Button
+                variant="primary"
+                className="w-10  mt-2"
+                onClick={() => setShowModalNew(true)}
+                >
+                TAMBAH
+                </Button>
                 {!misi?("")
                 :(
                   misi.map((one_misi,i)=>{
-                    return<>
-                      <Form.Group key ={i} className="d-flex mb-2 mt-2">
-                      <Form.Label className="w-25">{`misi ${i+1}`}</Form.Label>
-                      <Form.Control
-                        className="w-100"
-                        placeholder=""
-                        as="textarea"
-                        rows={2}
-                        value={misi[i].misi?misi[i].misi:""}
-                        onChange={(v) => {
-                          let newmisi = misi
-                          newmisi[i].misi = v.target.value;
-                          if(newmisi[i].misi){setMisi(newmisi)}
-                          console.log(misi)
-                        }}
-                      />
-                      </Form.Group>
+                    return <>
+                      <div className="container-table w-100">
+                        <Table  style={{ fontFamily: "Bold" }}>
+                          <tr>
+                            <td align="left">{`misi${i+1}`}</td>
+                            <td>{one_misi.misi}</td>
+                            <td className="d-flex align-items-center w-25">
+                              <Button
+                                name= "jumlah"
+                                className="deleteButton"
+                                style={{ fontFamily: "Bold" }}
+                                variant="primary"
+                                onClick={(v) => {
+                                  setShowModalMisi(true);
+                                  setUpdateMisi(one_misi);
+                                }}
+                              >
+                                EDIT
+                              </Button>
+                              <Button
+                                name= "jumlah"
+                                className="deleteButton"
+                                style={{ fontFamily: "Bold" }}
+                                variant="danger"
+                                onClick={(value) => {
+                                  setShowModalDelete(true);
+                                  setIdDelete(one_misi.id);
+                                }}
+                              >
+                                DELETE
+                              </Button>
+                              </td>
+                          </tr>
+                        </Table>
+                      </div>
                     </>
+
                     
                 })
                 )}
                 
+              </>
+              )
+              :((modeModal === "tujuan"?(
+                <>
+                {/* tujuan */}
+                <Button
+                variant="primary"
+                className="w-10  mt-2"
+                onClick={() => setShowModalNew(true)}
+                >
+                TAMBAH
+                </Button>
+                {!tujuan?("")
+                :(
+                  tujuan.map((one_tujuan,i)=>{
+                    return <>
+                      <div className="container-table w-100">
+                        <Table bordered hover style={{ fontFamily: "Bold" }}>
+                          <tr>
+                            <td align="left">{`tujuan${i+1}`}</td>
+                            <td>{one_tujuan.tujuan}</td>
+                            <td className="w-25">
+                              <Button
+                                name= "jumlah"
+                                className="deleteButton "
+                                style={{ fontFamily: "Bold" }}
+                                variant="primary"
+                                onClick={(v) => {
+                                  setShowModalMisi(true);
+                                  setUpdateTujuan(one_tujuan);
+                                }}
+                              >
+                                EDIT
+                              </Button>
+                              <Button
+                                name= "jumlah"
+                                className="deleteButton"
+                                style={{ fontFamily: "Bold" }}
+                                variant="danger"
+                                onClick={(value) => {
+                                  setShowModalDelete(true);
+                                  setIdDelete(one_tujuan.id);
+                                }}
+                              >
+                                DELETE
+                              </Button>
+                              </td>
+                          </tr>
+                        </Table>
+                      </div>
+                    </>
+
+                    
+                })
+                )}
                 
               </>
               )
-              :(<>
-                <>
-                {/* tujuan */}
-                {/* <Form.Group className="d-flex mb-2 mt-2">
-                <Form.Label className="w-25">tujuan</Form.Label>
-                <Form.Control
-                  className="w-100"
-                  placeholder=""
-                  as="textarea"
-                  rows={5}
-                  value={
-                    tujuan.map((tujuan, i)=>{
-                    return(`${i+1} ${tujuan} \n`)
-                    })}
-                  onChange={(v) => setTujuan(v.target.value)}
-                />
-                </Form.Group> */}
-              </>
-              </>)))
+              :(
+              <></>
+              )))))
               }
 
-              
-              
-              
               <Button
                 variant="success"
                 className="w-100 mb-4 mt-2"
@@ -364,6 +478,136 @@ const VisiMisi = () => {
               </Button>{" "}
             </Form>
           </div>
+        </Modal.Body>
+      </Modal>
+      {/* end of modal pertama */}
+
+      {/* modal kedua */}
+      <Modal
+        show={showModalMisi}
+        size="md"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton onClick={() => setShowModalMisi(false)}>
+          <Modal.Title id="contained-modal-title-vcenter" className="title-addevent" style={{ fontFamily: "Bold" }}>{`edit data ${modeModal}`}</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
+        <Form style={{ fontFamily: "Bold" }}>
+          {modeModal==="misi"?(
+            <Form.Group className="d-flex align-items-center mb-2 mt-2">
+              <Form.Label className="w-25">Edit Misi</Form.Label>
+              <Form.Control
+                className="w-100"
+                as="textarea"
+                rows={3}
+                placeholder={updateMisi?updateMisi.misi:""}
+                value={updateMisi?updateMisi.misi:""}
+                onChange={(v) => {
+                  setUpdateMisi((prevState) => ({
+                      ...prevState,
+                      misi: v.target.value,
+                    }))
+                  
+                }
+                }/>
+              </Form.Group>
+              
+              
+          )
+        :(modeModal==="tujuan"?(
+          <Form.Group className="d-flex align-items-center mb-2 mt-2">
+              <Form.Label className="w-25">Edit Tujaun</Form.Label>
+              <Form.Control
+                className="w-100"
+                as="textarea"
+                rows={3}
+                placeholder={updateTujuan?updateTujuan.tujuan:""}
+                value={updateTujuan?updateTujuan.tujuan:""}
+                onChange={(v) => {
+                  setUpdateTujuan((prevState) => ({
+                      ...prevState,
+                      tujuan: v.target.value,
+                    }))
+                  
+                }
+                }/>
+              </Form.Group>
+        )
+        :(
+          <></>
+        ))}
+        <Button
+                variant="success"
+                className="w-100 mb-4 mt-2"
+                onClick={() => handleSaveMisi()}
+              >
+                SIMPAN
+        </Button>
+        </Form>
+        </Modal.Body>
+      </Modal>
+      {/* end of modal kedua */}
+
+      {/* modal ketiga */}
+      <Modal
+        show={showModalDelete}
+        size="sm"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton onClick={() => setShowModalDelete(false)}>
+          <Modal.Title id="contained-modal-title-vcenter" className="title-addevent" style={{ fontFamily: "Bold" }}>Anda yakin ingin menghapus?</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
+        <Button
+                variant="danger"
+                className="w-100 mb-4 mt-2"
+                onClick={() => 
+                  handleDelete()}
+              >
+                HAPUS
+        </Button>
+        </Modal.Body>
+      </Modal>
+
+      {/* modal keempat */}
+      <Modal
+        show={showModalNew}
+        size="sm"
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header closeButton onClick={() => setShowModalNew(false)}>
+          <Modal.Title id="contained-modal-title-vcenter" className="title-addevent" style={{ fontFamily: "Bold" }}>{`menambah ${modeModal}`}</Modal.Title>
+        </Modal.Header>
+
+        <Modal.Body>
+        <Form style={{ fontFamily: "Bold" }}>
+          <Form.Group className="d-flex align-items-center mb-2 mt-2">
+            <Form.Control
+              className="w-100"
+              as="textarea"
+              rows={3}
+              placeholder={addNew!==""?addNew:""}
+              value={addNew!==""?addNew:""}
+              onChange={(v) => {
+                setAddNew(v.target.value) 
+              }
+              }
+              />
+          </Form.Group>
+          <Button
+                variant="success"
+                className="w-100 mb-4 mt-2"
+                onClick={() => 
+                  handleNew(modeModal)}
+              >
+                TAMBAH
+          </Button>
+        </Form>
         </Modal.Body>
       </Modal>
     </>
