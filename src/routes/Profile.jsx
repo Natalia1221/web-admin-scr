@@ -15,7 +15,6 @@ const VisiMisi = () => {
   const [jumlah, setJumlah] = useState(null);
   const [visi, setVisi] = useState();
   const [misi, setMisi] = useState();
-  const [updatemisi, setUpdatemisi] = useState();
   const [tujuan, setTujuan] = useState();
   
 
@@ -32,7 +31,6 @@ const VisiMisi = () => {
   const [showModalNew, setShowModalNew] = useState(false);
   const [addNew, setAddNew] = useState("");
 
-  const [loading, setLoading] = useState(true);
 
   const getUpdatedData = async (modeModal) =>{
     const  UpdatedData= await supabase.from(`${modeModal}`).select("*").order('created_at', { ascending: true });
@@ -43,7 +41,7 @@ const VisiMisi = () => {
   }
 
   const handleSaveEvent = async () => {
-    if(modeModal=="jumlah") {
+    if(modeModal==="jumlah") {
       const { error } = await supabase
       .from('jumlah')
       .update({ komputer: jumlah.komputer,
@@ -53,13 +51,13 @@ const VisiMisi = () => {
       .eq('id', jumlah.id)
     }
 
-    if(modeModal=="visi") {
+    if(modeModal==="visi") {
       const { error } = await supabase
       .from('visi')
       .update({ visi: visi.visi})
       .eq('id',  visi.id)
     }
-
+    
     setShowModalAdd(false);
   };
 
@@ -77,7 +75,7 @@ const VisiMisi = () => {
       }
     }
 
-    if(modeModal=="tujuan") {
+    if(modeModal==="tujuan") {
       if(updateTujuan!==""){
         
         const { error } = await supabase
@@ -150,7 +148,7 @@ const VisiMisi = () => {
       <center>
         {!jumlah ? (
           <Card className="w-25 mt-4 mb-4">
-            <Card.Body>Tidak ada data</Card.Body>
+            <Card.Body>Loading ...</Card.Body>
           </Card>
         ) : (
           <div className="container-table">
