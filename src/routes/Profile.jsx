@@ -1,4 +1,3 @@
-import '../assets/Profile.css';
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -22,6 +21,12 @@ const VisiMisi = () => {
   const [modeModal, setModeModal] = useState("");
 
   const [showModalMisi, setShowModalMisi] = useState(false);
+  const [updateJumlah, setUpdatJumlah] = useState({
+    komputer: "",
+    luas : "",
+    pengurus: "" 
+  });
+  const [updateVisi, setUpdateVisi] = useState("");
   const [updateMisi, setUpdateMisi] = useState("");
   const [updateTujuan, setUpdateTujuan] = useState("");
 
@@ -35,6 +40,8 @@ const VisiMisi = () => {
   const getUpdatedData = async (modeModal) =>{
     const  UpdatedData= await supabase.from(`${modeModal}`).select("*").order('created_at', { ascending: true });
     if(UpdatedData){
+      if(modeModal==="jumlah"){setJumlah(UpdatedData.data[0])}
+      if(modeModal==="visi"){setVisi(UpdatedData.data[0])}
       if(modeModal==="misi"){setMisi(UpdatedData.data)}
       if(modeModal==="tujuan"){setTujuan(UpdatedData.data)}
     }
@@ -42,20 +49,25 @@ const VisiMisi = () => {
 
   const handleSaveEvent = async () => {
     if(modeModal==="jumlah") {
+      console.log(updateJumlah)
       const { error } = await supabase
       .from('jumlah')
-      .update({ komputer: jumlah.komputer,
-                luas : jumlah.luas,
-                pengurus: jumlah.pengurus 
-              })
+      .update({
+        komputer: updateJumlah.komputer,
+        luas : updateJumlah.luas,
+        pengurus: updateJumlah.pengurus
+      })
       .eq('id', jumlah.id)
+
+      getUpdatedData(modeModal)
     }
 
     if(modeModal==="visi") {
       const { error } = await supabase
       .from('visi')
-      .update({ visi: visi.visi})
+      .update({ visi: updateVisi.visi})
       .eq('id',  visi.id)
+      getUpdatedData(modeModal)
     }
     
     setShowModalAdd(false);
@@ -170,6 +182,11 @@ const VisiMisi = () => {
                           style={{ fontFamily: "Bold" }}
                           variant="primary"
                           onClick={(value) => {
+                            setUpdatJumlah({
+                              komputer: jumlah.komputer,
+                              luas : jumlah.luas,
+                              pengurus: jumlah.pengurus 
+                            })
                             setShowModalAdd(true);
                             setModeModal("jumlah");
                           }}
@@ -189,6 +206,9 @@ const VisiMisi = () => {
                           style={{ fontFamily: "Bold" }}
                           variant="primary"
                           onClick={() => {
+                            setUpdateVisi(
+                              {visi: visi.visi}
+                            )
                             setShowModalAdd(true);
                             setModeModal("visi");
                           }}
@@ -279,10 +299,10 @@ const VisiMisi = () => {
                   <Form.Label className="w-25">Komputer</Form.Label>
                   <Form.Control
                     className="w-100"
-                    placeholder={jumlah?jumlah.komputer:""}
-                    value={jumlah.komputer}
+                    placeholder={updateJumlah?updateJumlah.komputer:""}
+                    value={updateJumlah.komputer}
                     onChange={(v) => {
-                      setJumlah((prevState) => ({
+                      setUpdatJumlah((prevState) => ({
                           ...prevState,
                           komputer: v.target.value,
                         }))
@@ -296,10 +316,10 @@ const VisiMisi = () => {
                   <Form.Label className="w-25">Luas</Form.Label>
                   <Form.Control
                     className="w-100"
-                    placeholder={jumlah?jumlah.luas:""}
-                    value={jumlah.luas}
+                    placeholder={updateJumlah?updateJumlah.luas:""}
+                    value={updateJumlah.luas}
                     onChange={(v) => {
-                      setJumlah((prevState) => ({
+                      setUpdatJumlah((prevState) => ({
                           ...prevState,
                           luas: v.target.value,
                         }))
@@ -313,10 +333,10 @@ const VisiMisi = () => {
                   <Form.Label className="w-25">Pengurus</Form.Label>
                   <Form.Control
                     className="w-100"
-                    placeholder={jumlah?jumlah.pengurus:""}
-                    value={jumlah.pengurus}
+                    placeholder={updateJumlah?updateJumlah.pengurus:""}
+                    value={updateJumlah.pengurus}
                     onChange={(v) => {
-                      setJumlah((prevState) => ({
+                      setUpdatJumlah((prevState) => ({
                           ...prevState,
                           pengurus: v.target.value,
                         }))
@@ -333,16 +353,15 @@ const VisiMisi = () => {
                 <Form.Group className="d-flex mb-2 mt-2">
                 <Form.Label className="w-25">visi</Form.Label>
                 <Form.Control
-                  className={visi?visi.visi:""}
+                  className={updateVisi?updateVisi.visi:""}
                   placeholder=""
                   as="textarea"
                   rows={3}
-                  value={visi?visi.visi:""}
+                  value={updateVisi?updateVisi.visi:""}
                   onChange={(v) => {
-                    setVisi((prevState) => ({
-                        ...prevState,
+                    setUpdateVisi({
                         visi: v.target.value,
-                      }))
+                      })
                     
                   }
                   }

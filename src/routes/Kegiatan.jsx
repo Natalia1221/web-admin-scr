@@ -17,9 +17,6 @@ const Kegiatan = () => {
   const [bidang, setBidang] = useState(null);
   const [kegiatan, setKegiatan] = useState();
   
-  // const [showModalAdd, setShowModalAdd] = useState(false);
-  // const [modeModal, setModeModal] = useState("");
-
   const [showModalKegiatan, setShowModalKegiatan] = useState(false);
   const [updateKegiatan, setUpdateKegiatan] = useState("");
 
@@ -30,7 +27,7 @@ const Kegiatan = () => {
   const [addNew, setAddNew] = useState("");
 
   const getUpdatedData = async (modeModal) =>{
-    const  UpdatedData= await supabase.from(`${modeModal}`).select("*").order('created_at', { ascending: true });
+    const  UpdatedData= await supabase.from(`${modeModal}`).select("*").order('name', { ascending: true });
     if(UpdatedData){
       if(modeModal==="kegiatan"){setKegiatan(UpdatedData.data)}
       if(modeModal==="bidang"){setBidang(UpdatedData.data)}
@@ -49,12 +46,13 @@ const Kegiatan = () => {
   }
 
   const handleNew = async () =>{
-    const { error } = await supabase
-    .from(`kegiatan`)
-    .insert(addNew)
-    getUpdatedData("kegiatan")
+    if(addNew.name!==""){
+      const { error } = await supabase
+      .from(`kegiatan`)
+      .insert(addNew)
+      getUpdatedData("kegiatan")
+    }
     setShowModalNew(false)
-    
   }
 
   const handleDelete = async () =>{
